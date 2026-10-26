@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+  <class>QtFileMgrWidget</class>
+  <widget class="QWidget" name="QtFileMgrWidget">
+    <property name="geometry">
+      <rect><x>0</x><y>0</y><width>1100</width><height>700</height></rect>
+    </property>
+    <layout class="QVBoxLayout" name="mainLayout">
+      <property name="spacing"><number>0</number></property>
+      <property name="leftMargin"><number>0</number></property>
+      <property name="topMargin"><number>0</number></property>
+      <property name="rightMargin"><number>0</number></property>
+      <property name="bottomMargin"><number>0</number></property>
+      <item>
+        <!-- 顶部导航栏: 后退/前进/上级 + 面包屑 + 工具按钮
+             栏高由 applyConfig 按 iconSize 动态设定,不在此固定 (R2-WS-P2-12) -->
+        <widget class="QWidget" name="topBar"/>
+      </item>
+      <item>
+        <!-- 主水平分割器: 左(Places) | 右(FileView) -->
+        <widget class="QSplitter" name="m_splitter">
+          <property name="orientation"><enum>Qt::Horizontal</enum></property>
+          <property name="handleWidth"><number>6</number></property>
+          <property name="childrenCollapsible"><bool>false</bool></property>
+          <widget class="QWidget" name="leftPane">
+            <layout class="QVBoxLayout" name="leftPaneLayout">
+              <property name="spacing"><number>0</number></property>
+              <property name="leftMargin"><number>0</number></property>
+              <property name="topMargin"><number>0</number></property>
+              <property name="rightMargin"><number>0</number></property>
+              <property name="bottomMargin"><number>0</number></property>
+              <item>
+                <!-- PlacesPanel -->
+                <widget class="QtFileMgrPlacesPanel" name="m_placesPanel"/>
+              </item>
+            </layout>
+          </widget>
+          <widget class="QWidget" name="rightPane">
+            <layout class="QVBoxLayout" name="rightPaneLayout">
+              <property name="spacing"><number>0</number></property>
+              <property name="leftMargin"><number>0</number></property>
+              <property name="topMargin"><number>0</number></property>
+              <property name="rightMargin"><number>0</number></property>
+              <property name="bottomMargin"><number>0</number></property>
+              <item>
+                <!-- 文件区域水平分割器: FileView | 侧面板(版本信息等) -->
+                <widget class="QSplitter" name="m_fileViewSplitter">
+                  <property name="orientation"><enum>Qt::Horizontal</enum></property>
+                  <property name="handleWidth"><number>2</number></property>
+                  <property name="childrenCollapsible"><bool>false</bool></property>
+                  <widget class="QtFileMgrFileView" name="m_fileView"/>
+                  <widget class="QWidget" name="m_fileViewSidePanel">
+                    <property name="minimumSize"><size><width>0</width><height>0</height></size></property>
+                  </widget>
+                </widget>
+              </item>
+              <item>
+                <!-- FilterBar -->
+                <widget class="QtFileMgrFilterBar" name="m_filterBar"/>
+              </item>
+            </layout>
+          </widget>
+        </widget>
+      </item>
+      <item>
+        <!-- 状态栏: sizeGrip 由代码统一关闭,勿在 .ui 再开 (R2-WS-P2-12) -->
+        <widget class="QStatusBar" name="m_statusBar"/>
+      </item>
+    </layout>
+  </widget>
+  <customwidgets>
+    <customwidget>
+      <class>QtFileMgrPlacesPanel</class>
+      <extends>QWidget</extends>
+      <header>QtFileMgrPlacesPanel.h</header>
+    </customwidget>
+    <customwidget>
+      <class>QtFileMgrFileView</class>
+      <extends>QWidget</extends>
+      <header>QtFileMgrFileView.h</header>
+    </customwidget>
+    <customwidget>
+      <class>QtFileMgrFilterBar</class>
+      <extends>QWidget</extends>
+      <header>QtFileMgrFilterBar.h</header>
+    </customwidget>
+  </customwidgets>
+</ui>

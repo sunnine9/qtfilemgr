@@ -1,0 +1,85 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Spike
+# Author: Spike
+
+name: Build and verify release
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  linux:
+    name: Qt ${{ matrix.qt }} / SSH ${{ matrix.ssh }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        qt: [5, 6]
+        ssh: ["ON", "OFF"]
+    steps:
+      # Versions verified against the official actions/* README usage examples.
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Install public build and integration dependencies
+        env:
+          QT_MAJOR: ${{ matrix.qt }}
+          SSH_ENABLED: ${{ matrix.ssh }}
+        run: |
+          sudo apt-get update
+          packages=(cmake ninja-build g++ python3)
+          if [ "$QT_MAJOR" = 5 ]; then
+            packages+=(qtbase5-dev qtbase5-dev-tools)
+          else
+            packages+=(qt6-base-dev qt6-base-dev-tools)
+          fi
+          if [ "$SSH_ENABLED" = ON ]; then
+            packages+=(pkg-config libssh-dev openssh-server libnss-wrapper)
+          fi
+          sudo apt-get install -y --no-install-recommends "${packages[@]}"
+          if [ "$SSH_ENABLED" = ON ]; then
+            sudo install -d -m 0755 /run/sshd
+          fi
+      - name: Configure
+        run: >-
+          cmake -S . -B build -G Ninja
+          -DCMAKE_BUILD_TYPE=Release
+          -DQTFILEMGR_QT_MAJOR=${{ matrix.qt }}
+          -DQTFILEMGR_WITH_SSH=${{ matrix.ssh }}
+          -DBUILD_TESTING=ON
+          -DQTFILEMGR_BUILD_EXAMPLES=ON
+          -DQTFILEMGR_TEST_SSH_E2E=${{ matrix.ssh }}
+      - name: Build
+        run: cmake --build build --parallel 2
+      - name: Offscreen regression and real SSH integration
+        run: ctest --test-dir build --output-on-failure --parallel 2
+      - name: Install and verify an independent find_package consumer
+        env:
+          SSH_ENABLED: ${{ matrix.ssh }}
+        run: |
+          cmake --install build --prefix "$RUNNER_TEMP/qtfilemgr-install"
+          cmake -S tests/installed_consumer -B consumer-build -G Ninja \
+            -DCMAKE_PREFIX_PATH="$RUNNER_TEMP/qtfilemgr-install" \
+            -DQTFILEMGR_EXPECT_SSH="$SSH_ENABLED"
+          cmake --build consumer-build --parallel 2
+          python3 tests/run_isolated.py --binary consumer-build/qtfilemgr_installed_smoke
+          for example in embedded memory_io; do
+            cmake -S "examples/$example" -B "example-$example-build" -G Ninja \
+              -DCMAKE_PREFIX_PATH="$RUNNER_TEMP/qtfilemgr-install"
+            cmake --build "example-$example-build" --parallel 2
+            python3 tests/run_isolated.py \
+              --binary "example-$example-build/qtfilemgr_example_$example" -- --smoke-test
+          done
+      - name: Preserve test diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-diagnostics-qt${{ matrix.qt }}-ssh${{ matrix.ssh }}
+          path: build/Testing/Temporary/*.log
+          if-no-files-found: warn

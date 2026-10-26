@@ -1,0 +1,16 @@
+/build*/
+/install*/
+/consumer-build/
+CMakeUserPresets.json
+*.user
+*.o
+*.obj
+*.so
+*.so.*
+*.a
+Makefile*
+.qmake.stash
+moc_*.cpp
+qrc_*.cpp
+ui_*.h
+__pycache__/

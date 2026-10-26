@@ -1,0 +1,92 @@
+{
+    "version": 1,
+    "paths": {
+        "rootPath": "",
+        "allowedPaths": []
+    },
+    "view": {
+        "defaultMode": 0,
+        "rememberMode": false,
+        "showHiddenFiles": false,
+        "foldersFirst": true,
+        "zoomLevel": 2,
+        "sortColumn": 0,
+        "sortOrder": "ascending",
+        "alternatingRowColors": true
+    },
+    "permissions": {
+        "allowCreate": true,
+        "allowDelete": true,
+        "allowRename": true,
+        "allowDragDrop": true
+    },
+    "appearance": {
+        "toolbar": {
+            "iconSize": 18,
+            "items": {
+                "viewModeIcons": true,
+                "viewModeCompact": true,
+                "viewModeDetails": true,
+                "showHiddenFiles": true,
+                "showFoldersFirst": true,
+                "breadcrumb": true,
+                "settingsButton": true
+            }
+        },
+        "statusBar": {
+            "visible": true,
+            "showZoomSlider": true,
+            "showDiskSpace": true,
+            "showItemCount": true
+        },
+        "placesPanel": {
+            "width": 200,
+            "iconSize": 22
+        },
+        "splitter": {
+            "handleWidth": 1
+        }
+    },
+    "places": {
+        "showDevices": true,
+        "deviceRefreshMs": 30000,
+        "builtin": [
+            {
+                "name": "主目录",
+                "path": "~",
+                "icon": "user-home"
+            },
+            {
+                "name": "桌面",
+                "path": "~/Desktop",
+                "icon": "user-desktop"
+            },
+            {
+                "name": "文档",
+                "path": "~/Documents",
+                "icon": "folder-documents"
+            },
+            {
+                "name": "下载",
+                "path": "~/Downloads",
+                "icon": "folder-downloads"
+            },
+            {
+                "name": "根目录",
+                "path": "/",
+                "icon": "folder-root"
+            }
+        ],
+        "projectPlaces": []
+    },
+    "features": {
+        "filterBar": {
+            "visible": false,
+            "defaultMode": "plaintext",
+            "caseSensitive": false
+        },
+        "showThumbnails": false,
+        "showVersions": false
+    },
+    "contextMenuExtensions": []
+}
